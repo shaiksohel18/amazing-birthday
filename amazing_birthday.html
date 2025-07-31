@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎉 Happy Birthday Surprise 🎉</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #ffecd2, #fcb69f);
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .container {
+      text-align: center;
+      padding: 60px 20px;
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: #e91e63;
+      margin-bottom: 10px;
+    }
+
+    .message {
+      font-size: 1.3rem;
+      margin: 20px 0;
+      color: #333;
+    }
+
+    button {
+      background-color: #e91e63;
+      color: white;
+      padding: 15px 25px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: #c2185b;
+    }
+
+    .balloon {
+      position: absolute;
+      width: 40px;
+      height: 60px;
+      background: red;
+      border-radius: 50% 50% 50% 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) translateX(0); }
+      100% { transform: translateY(-100vh) translateX(30px); }
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .cake {
+      margin-top: 30px;
+      font-size: 3rem;
+      animation: bounce 1s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0);}
+      50% { transform: translateY(-10px);}
+    }
+
+    .input-name {
+      margin: 20px 0;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 1rem;
+      border: 2px solid #e91e63;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 2rem; }
+      .message { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3b3a19e7fb.mp3?filename=happy-birthday-115086.mp3" loop></audio>
+
+  <div class="container">
+    <h1>🎉 Happy Birthday! 🎉</h1>
+
+    <div class="input-name">
+      <input type="text" id="nameInput" placeholder="Enter name" />
+      <button onclick="showGreeting()">Start Celebration</button>
+    </div>
+
+    <p class="message" id="messageText" style="display:none;"></p>
+    <div class="cake" id="cake" style="display:none;">🎂</div>
+    <canvas id="confettiCanvas"></canvas>
+  </div>
+
+  <!-- Balloons -->
+  <div class="balloon" style="left: 10%; animation-delay: 0s;"></div>
+  <div class="balloon" style="left: 30%; animation-delay: 1s;"></div>
+  <div class="balloon" style="left: 50%; animation-delay: 2s;"></div>
+  <div class="balloon" style="left: 70%; animation-delay: 3s;"></div>
+  <div class="balloon" style="left: 90%; animation-delay: 4s;"></div>
+
+  <script>
+    function showGreeting() {
+      const name = document.getElementById("nameInput").value.trim();
+      if (name === "") {
+        alert("Please enter a name!");
+        return;
+      }
+
+      const message = document.getElementById("messageText");
+      message.innerText = `Dear ${name}, wishing you a wonderful birthday full of love, laughter & joy! 🎈🎁`;
+      message.style.display = "block";
+      document.getElementById("cake").style.display = "block";
+
+      document.getElementById("bgMusic").play();
+      startConfetti();
+    }
+
+    function startConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const confetti = [];
+      const colors = ['#e91e63', '#9c27b0', '#3f51b5', '#03a9f4', '#4caf50', '#ff9800'];
+
+      for (let i = 0; i < 250; i++) {
+        confetti.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          r: Math.random() * 6 + 4,
+          d: Math.random() * 100 + 10,
+          color: colors[Math.floor(Math.random() * colors.length)]
+        });
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        confetti.forEach((c) => {
+          ctx.beginPath();
+          ctx.fillStyle = c.color;
+          ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        update();
+      }
+
+      function update() {
+        confetti.forEach((c) => {
+          c.y += Math.cos(c.d / 10) + 2;
+          c.x += Math.sin(c.d / 10);
+          if (c.y > canvas.height) {
+            c.y = -10;
+            c.x = Math.random() * canvas.width;
+          }
+        });
+      }
+
+      function animate() {
+        draw();
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    }
+  </script>
+</body>
+</html>
